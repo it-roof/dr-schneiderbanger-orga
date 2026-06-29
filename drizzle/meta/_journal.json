@@ -8,6 +8,27 @@
       "when": 1782747696224,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782748609831,
+      "tag": "0001_lucky_sunfire",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782749452189,
+      "tag": "0002_complex_whizzer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1782749748350,
+      "tag": "0003_nasty_hulk",
+      "breakpoints": true
     }
   ]
 }

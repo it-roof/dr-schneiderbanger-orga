@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { BrandWordmark } from "@/components/brand/brand-wordmark";
 import { getPageMeta, navigation } from "@/lib/navigation";
 import { KANZLEI_NAME } from "@/lib/brand";
@@ -33,7 +34,17 @@ const fachbereiche = [
   { label: "Beratung", color: "bg-teal-400" },
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: {
+    name?: string | null;
+    email?: string | null;
+    role: "admin" | "mitarbeiter";
+  };
+}) {
   const pathname = usePathname();
   const page = getPageMeta(pathname);
 
@@ -101,6 +112,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </SidebarContent>
 
           <SidebarFooter className="space-y-3 border-t border-sidebar-border/80 p-4">
+            <div className="rounded-none border border-sidebar-border/60 bg-white/5 px-3 py-2.5">
+              <p className="truncate text-sm font-medium text-sidebar-foreground">
+                {user.name}
+              </p>
+              <p className="truncate text-xs text-sidebar-foreground/55">
+                {user.email}
+              </p>
+            </div>
+            <SignOutButton />
             <div className="flex flex-wrap gap-1.5">
               {fachbereiche.map((bereich) => (
                 <span

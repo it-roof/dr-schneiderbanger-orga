@@ -10,3 +10,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Schema-Änderungen **nur** via `pnpm db:generate` → `pnpm db:migrate`
 - **Nie** `db:push` verwenden
 - Siehe `lib/db/README.md` und `.cursor/rules/drizzle-migrations.mdc`
+
+## Auth (NextAuth / Auth.js)
+
+- E-Mail + Passwort (Server Action + DB-Sessions)
+- Sessions in PostgreSQL via `@auth/drizzle-adapter`
+- Konfiguration in `lib/auth/`
+- Ersten Benutzer: `pnpm user:create <email> <passwort> <name> [admin]`
+- Geschützte Routen via `middleware.ts`
+- Passwort-Policy: min. 12 Zeichen, Buchstaben + Ziffern
+- Login-Rate-Limit: 5 Fehlversuche / 15 Min. pro E-Mail
+
+## Enterprise Lightweight
+
+Professionelle Standards, minimale Komplexität. Siehe `.cursor/rules/enterprise-lightweight.mdc`.

@@ -1,0 +1,42 @@
+---
+description: Enterprise Best Practice — lightweight umsetzen, ohne Over-Engineering
+alwaysApply: true
+---
+
+# Enterprise Lightweight
+
+Grundsatz: **Professionelle Standards, minimale Komplexität.** Jedes Feature muss sich für eine 30+ Kanzlei rechtfertigen — ohne Enterprise-Bloat.
+
+## Immer
+
+- **Sicherheit first:** Auth-Checks in Middleware **und** Server Actions
+- **Secrets** nur in Env-Variablen, nie im Code/Git
+- **Passwörter** gehasht (bcrypt), nie im Klartext speichern
+- **Generische Fehlermeldungen** beim Login (kein „User existiert nicht“)
+- **Schema-Änderungen** nur via Drizzle-Migrationen
+- **Typed** (TypeScript), explizite Fehlerbehandlung
+- **Deutsche UI**, englische Code-Identifiers
+
+## Lightweight statt Enterprise-Bloat
+
+| Statt | Nutzen |
+|-------|--------|
+| Microservices | Monolith (Next.js App) |
+| Redis-Session-Store | DB-Sessions (PostgreSQL) |
+| RBAC-Framework | Einfaches `role`-Feld |
+| Self-Service-Register | Invite-only (`user:create` / später Admin-UI) |
+| Vollständiges Audit-System | Später, wenn Modul es braucht |
+
+## Vor Prod-Deploy prüfen
+
+- `AUTH_SECRET` und `DATABASE_URL` gesetzt
+- `pnpm db:migrate` ausgeführt
+- HTTPS aktiv
+- Keine Test-Credentials in Prod
+
+## Neue Features bewerten
+
+1. Braucht es Auth? → Session prüfen
+2. Braucht es Persistenz? → Drizzle + Migration
+3. Braucht es Admin-only? → `role === 'admin'`
+4. Kann es warten? → Nicht jetzt bauen

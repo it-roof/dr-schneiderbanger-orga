@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { auth } from "@/lib/auth";
 import {
   createTextbausteinRow,
   deleteTextbausteinRow,
@@ -24,7 +25,15 @@ function validateInput(input: TextbausteinInput): string | null {
   return null;
 }
 
+async function requireUser() {
+  const session = await auth();
+  return session?.user ?? null;
+}
+
 export async function createTextbaustein(input: TextbausteinInput) {
+  const user = await requireUser();
+  if (!user) return { success: false as const, error: "Nicht angemeldet." };
+
   const error = validateInput(input);
   if (error) return { success: false as const, error };
 
@@ -35,6 +44,9 @@ export async function createTextbaustein(input: TextbausteinInput) {
 }
 
 export async function updateTextbaustein(id: string, input: TextbausteinInput) {
+  const user = await requireUser();
+  if (!user) return { success: false as const, error: "Nicht angemeldet." };
+
   const error = validateInput(input);
   if (error) return { success: false as const, error };
 
@@ -50,6 +62,9 @@ export async function updateTextbaustein(id: string, input: TextbausteinInput) {
 }
 
 export async function deleteTextbaustein(id: string) {
+  const user = await requireUser();
+  if (!user) return { success: false as const, error: "Nicht angemeldet." };
+
   const deleted = await deleteTextbausteinRow(id);
 
   if (!deleted) {
