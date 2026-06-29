@@ -1,0 +1,39 @@
+---
+description: Drizzle ORM — Schema- und Migrations-Workflow für PostgreSQL
+globs: lib/db/**,drizzle/**,drizzle.config.ts
+alwaysApply: false
+---
+
+# Drizzle-Migrationen
+
+## Pflicht-Workflow
+
+1. Schema nur in `lib/db/schema.ts` ändern
+2. `pnpm db:generate` — Migration erzeugen
+3. Generiertes SQL in `drizzle/` prüfen
+4. `pnpm db:migrate` — auf DB anwenden
+5. `drizzle/*.sql` und `drizzle/meta/` committen
+
+## Verboten
+
+- **`drizzle-kit push` / `pnpm db:push`** — nie für dieses Projekt
+- Schema per Hand in der DB ändern ohne Migration
+- Generierte Migrationsdateien nachträglich editieren (außer bei bewusstem Hotfix + Abstimmung)
+
+## Struktur
+
+- `lib/db/schema.ts` — Tabellen & Enums
+- `lib/db/index.ts` — DB-Client für App-Code
+- `lib/db/migrate.ts` — programmatisches Migrieren
+- `drizzle/` — versionierte SQL-Migrationen
+- `drizzle.config.ts` — Drizzle-Kit-Konfiguration
+
+## Neue Tabelle / Spalte
+
+```typescript
+// lib/db/schema.ts erweitern, dann:
+// pnpm db:generate
+// pnpm db:migrate
+```
+
+Details: `lib/db/README.md`
