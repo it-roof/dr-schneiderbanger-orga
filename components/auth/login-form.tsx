@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 
 import { BrandWordmark } from "@/components/brand/brand-wordmark";
 import { loginAction } from "@/lib/auth/actions";
@@ -11,6 +11,12 @@ import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
+
+  useEffect(() => {
+    if (state?.success) {
+      window.location.assign("/");
+    }
+  }, [state]);
 
   return (
     <div className="surface-card w-full max-w-md p-8">

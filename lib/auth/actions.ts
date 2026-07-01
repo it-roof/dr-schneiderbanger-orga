@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 import { authorizeCredentials } from "@/lib/auth/authorize";
 import { getAuthSessionCookieConfig } from "@/lib/auth/cookies";
@@ -9,6 +8,7 @@ import { createUserSession } from "@/lib/auth/sessions";
 
 export type LoginState = {
   error?: string;
+  success?: boolean;
 };
 
 export async function loginAction(
@@ -36,5 +36,5 @@ export async function loginAction(
     expires,
   });
 
-  redirect("/");
+  return { success: true };
 }

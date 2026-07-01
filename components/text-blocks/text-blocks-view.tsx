@@ -11,18 +11,18 @@ import {
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/layout/page-header";
-import { BereichBadge } from "@/components/textbausteine/bereich-badge";
+import { DepartmentBadge } from "@/components/text-blocks/department-badge";
 import {
-  createTextbaustein,
-  deleteTextbaustein,
-  updateTextbaustein,
-} from "@/lib/textbausteine/actions";
-import { bereichStyles } from "@/lib/textbausteine/bereich-styles";
+  createTextBlock,
+  deleteTextBlock,
+  updateTextBlock,
+} from "@/lib/text-blocks/actions";
+import { departmentStyles } from "@/lib/text-blocks/department-styles";
 import {
-  BEREICHE,
-  type Bereich,
-  type Textbaustein,
-} from "@/lib/textbausteine/types";
+  DEPARTMENTS,
+  type Department,
+  type TextBlock,
+} from "@/lib/text-blocks/types";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -63,45 +63,47 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 type FormState = {
-  titel: string;
-  inhalt: string;
-  bereich: Bereich;
+  title: string;
+  content: string;
+  department: Department;
 };
 
 const emptyForm: FormState = {
-  titel: "",
-  inhalt: "",
-  bereich: "allgemein",
+  title: "",
+  content: "",
+  department: "general",
 };
 
-type TextbausteineViewProps = {
-  initialItems: Textbaustein[];
+type TextBlocksViewProps = {
+  initialItems: TextBlock[];
 };
 
-export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
+export function TextBlocksView({ initialItems }: TextBlocksViewProps) {
   const [items, setItems] = useState(initialItems);
   const [search, setSearch] = useState("");
-  const [bereichFilter, setBereichFilter] = useState<Bereich | "alle">("alle");
+  const [departmentFilter, setDepartmentFilter] = useState<Department | "all">(
+    "all"
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<Textbaustein | null>(null);
+  const [editingItem, setEditingItem] = useState<TextBlock | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
-  const [deleteTarget, setDeleteTarget] = useState<Textbaustein | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TextBlock | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const filteredItems = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return items.filter((item) => {
-      const matchesBereich =
-        bereichFilter === "alle" || item.bereich === bereichFilter;
+      const matchesDepartment =
+        departmentFilter === "all" || item.department === departmentFilter;
       const matchesSearch =
         !query ||
-        item.titel.toLowerCase().includes(query) ||
-        item.inhalt.toLowerCase().includes(query);
+        item.title.toLowerCase().includes(query) ||
+        item.content.toLowerCase().includes(query);
 
-      return matchesBereich && matchesSearch;
+      return matchesDepartment && matchesSearch;
     });
-  }, [items, search, bereichFilter]);
+  }, [items, search, departmentFilter]);
 
   function openCreateDialog() {
     setEditingItem(null);
@@ -109,12 +111,12 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
     setDialogOpen(true);
   }
 
-  function openEditDialog(item: Textbaustein) {
+  function openEditDialog(item: TextBlock) {
     setEditingItem(item);
     setForm({
-      titel: item.titel,
-      inhalt: item.inhalt,
-      bereich: item.bereich,
+      title: item.title,
+      content: item.content,
+      department: item.department,
     });
     setDialogOpen(true);
   }
@@ -122,8 +124,8 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
   function handleSubmit() {
     startTransition(async () => {
       const result = editingItem
-        ? await updateTextbaustein(editingItem.id, form)
-        : await createTextbaustein(form);
+        ? await updateTextBlock(editingItem.id, form)
+        : await createTextBlock(form);
 
       if (!result.success) {
         toast.error(result.error);
@@ -154,7 +156,7 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
     const target = deleteTarget;
 
     startTransition(async () => {
-      const result = await deleteTextbaustein(target.id);
+      const result = await deleteTextBlock(target.id);
 
       if (!result.success) {
         toast.error(result.error);
@@ -167,9 +169,9 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
     });
   }
 
-  async function copyInhalt(item: Textbaustein) {
+  async function copyContent(item: TextBlock) {
     try {
-      await navigator.clipboard.writeText(item.inhalt);
+      await navigator.clipboard.writeText(item.content);
       toast.success("Inhalt in die Zwischenablage kopiert.");
     } catch {
       toast.error("Kopieren fehlgeschlagen.");
@@ -206,24 +208,24 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
 
         <div className="flex flex-wrap gap-2">
           <FilterPill
-            active={bereichFilter === "alle"}
-            onClick={() => setBereichFilter("alle")}
+            active={departmentFilter === "all"}
+            onClick={() => setDepartmentFilter("all")}
             label="Alle"
             count={items.length}
             activeClassName="bg-primary text-primary-foreground shadow-sm shadow-primary/20"
           />
-          {BEREICHE.map((bereich) => {
+          {DEPARTMENTS.map((department) => {
             const count = items.filter(
-              (item) => item.bereich === bereich.value
+              (item) => item.department === department.value
             ).length;
-            const styles = bereichStyles[bereich.value];
+            const styles = departmentStyles[department.value];
 
             return (
               <FilterPill
-                key={bereich.value}
-                active={bereichFilter === bereich.value}
-                onClick={() => setBereichFilter(bereich.value)}
-                label={bereich.label}
+                key={department.value}
+                active={departmentFilter === department.value}
+                onClick={() => setDepartmentFilter(department.value)}
+                label={department.label}
                 count={count}
                 dotClassName={styles.dot}
                 activeClassName={styles.pill}
@@ -262,10 +264,7 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
           </EmptyHeader>
           {items.length === 0 && (
             <EmptyContent>
-              <Button
-                onClick={openCreateDialog}
-                size="lg"
-              >
+              <Button onClick={openCreateDialog} size="lg">
                 <PlusIcon data-icon="inline-start" />
                 Ersten Textbaustein anlegen
               </Button>
@@ -279,20 +278,20 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
               key={item.id}
               className={cn(
                 "surface-card group overflow-hidden border-l-[3px] transition-shadow hover:shadow-[var(--shadow-elevated)]",
-                bereichStyles[item.bereich].accent,
-                bereichStyles[item.bereich].wash
+                departmentStyles[item.department].accent,
+                departmentStyles[item.department].wash
               )}
             >
               <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 flex-1 space-y-3">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <h2 className="font-heading text-lg font-medium tracking-tight">
-                      {item.titel}
+                      {item.title}
                     </h2>
-                    <BereichBadge bereich={item.bereich} />
+                    <DepartmentBadge department={item.department} />
                   </div>
                   <p className="line-clamp-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                    {item.inhalt}
+                    {item.content}
                   </p>
                 </div>
 
@@ -301,7 +300,7 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
                     variant="outline"
                     size="sm"
                     className="bg-background/80"
-                    onClick={() => copyInhalt(item)}
+                    onClick={() => copyContent(item)}
                   >
                     <CopyIcon data-icon="inline-start" />
                     Kopieren
@@ -359,14 +358,14 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
 
           <div className="grid gap-5 px-6 py-5">
             <div className="grid gap-2">
-              <Label htmlFor="titel">Titel</Label>
+              <Label htmlFor="title">Titel</Label>
               <Input
-                id="titel"
-                value={form.titel}
+                id="title"
+                value={form.title}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    titel: event.target.value,
+                    title: event.target.value,
                   }))
                 }
                 placeholder="z. B. Anschreiben Erstberatung"
@@ -375,23 +374,23 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="bereich">Bereich</Label>
+              <Label htmlFor="department">Bereich</Label>
               <Select
-                value={form.bereich}
+                value={form.department}
                 onValueChange={(value) =>
                   setForm((current) => ({
                     ...current,
-                    bereich: value as Bereich,
+                    department: value as Department,
                   }))
                 }
               >
-                <SelectTrigger id="bereich" className="h-11 rounded-xl">
+                <SelectTrigger id="department" className="h-11 rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {BEREICHE.map((bereich) => (
-                    <SelectItem key={bereich.value} value={bereich.value}>
-                      {bereich.label}
+                  {DEPARTMENTS.map((department) => (
+                    <SelectItem key={department.value} value={department.value}>
+                      {department.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -399,14 +398,14 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="inhalt">Inhalt</Label>
+              <Label htmlFor="content">Inhalt</Label>
               <Textarea
-                id="inhalt"
-                value={form.inhalt}
+                id="content"
+                value={form.content}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    inhalt: event.target.value,
+                    content: event.target.value,
                   }))
                 }
                 placeholder="Text des Bausteins…"
@@ -442,8 +441,8 @@ export function TextbausteineView({ initialItems }: TextbausteineViewProps) {
               Textbaustein löschen?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              „{deleteTarget?.titel}" wird dauerhaft entfernt. Diese Aktion
-              kann nicht rückgängig gemacht werden.
+              „{deleteTarget?.title}" wird dauerhaft entfernt. Diese Aktion kann
+              nicht rückgängig gemacht werden.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

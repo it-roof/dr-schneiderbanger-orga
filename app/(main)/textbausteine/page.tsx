@@ -1,10 +1,10 @@
-import { TextbausteineView } from "@/components/textbausteine/textbausteine-view";
-import { getTextbausteine } from "@/lib/textbausteine/storage";
+import { TextBlocksView } from "@/components/text-blocks/text-blocks-view";
+import { getTextBlocks } from "@/lib/text-blocks/storage";
 
 export const dynamic = "force-dynamic";
 
-export default async function TextbausteinePage() {
-  const items = await getTextbausteine();
+export default async function TextBlocksPage() {
+  const items = await getTextBlocks();
 
-  return <TextbausteineView initialItems={items} />;
+  return <TextBlocksView initialItems={items} />;
 }

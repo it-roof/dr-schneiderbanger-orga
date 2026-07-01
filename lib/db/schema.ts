@@ -8,23 +8,23 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export const bereichEnum = pgEnum("bereich", [
-  "allgemein",
-  "steuerberatung",
-  "recht",
-  "sanierung-insolvenz",
-  "unternehmensberatung",
+export const departmentEnum = pgEnum("department", [
+  "general",
+  "tax",
+  "legal",
+  "restructuring-insolvency",
+  "consulting",
 ]);
 
-export const roleEnum = pgEnum("user_role", ["admin", "mitarbeiter"]);
+export const roleEnum = pgEnum("user_role", ["admin", "employee"]);
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
   passwordHash: text("password_hash").notNull(),
-  role: roleEnum("role").notNull().default("mitarbeiter"),
-  bereich: bereichEnum("bereich"),
+  role: roleEnum("role").notNull().default("employee"),
+  department: departmentEnum("department"),
   emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
@@ -78,11 +78,11 @@ export const verificationTokens = pgTable(
   })
 );
 
-export const textbausteine = pgTable("textbausteine", {
+export const textBlocks = pgTable("text_blocks", {
   id: uuid("id").primaryKey().defaultRandom(),
-  titel: text("titel").notNull(),
-  inhalt: text("inhalt").notNull(),
-  bereich: bereichEnum("bereich").notNull().default("allgemein"),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  department: departmentEnum("department").notNull().default("general"),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .notNull()
     .defaultNow(),
@@ -101,3 +101,4 @@ export const authLoginAttempts = pgTable("auth_login_attempts", {
 
 export type User = typeof users.$inferSelect;
 export type UserRole = (typeof roleEnum.enumValues)[number];
+export type Department = (typeof departmentEnum.enumValues)[number];

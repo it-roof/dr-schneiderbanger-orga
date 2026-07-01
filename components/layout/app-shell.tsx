@@ -27,7 +27,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const fachbereiche = [
+const practiceAreas = [
   { label: "Steuer", color: "bg-sky-400" },
   { label: "Recht", color: "bg-indigo-400" },
   { label: "Sanierung", color: "bg-amber-400" },
@@ -42,7 +42,7 @@ export function AppShell({
   user: {
     name?: string | null;
     email?: string | null;
-    role: "admin" | "mitarbeiter";
+    role: "admin" | "employee";
   };
 }) {
   const pathname = usePathname();
@@ -122,13 +122,13 @@ export function AppShell({
             </div>
             <SignOutButton />
             <div className="flex flex-wrap gap-1.5">
-              {fachbereiche.map((bereich) => (
+              {practiceAreas.map((area) => (
                 <span
-                  key={bereich.label}
+                  key={area.label}
                   className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2 py-0.5 text-[0.62rem] text-sidebar-foreground/60"
                 >
-                  <span className={cn("size-1.5 rounded-full", bereich.color)} />
-                  {bereich.label}
+                  <span className={cn("size-1.5 rounded-full", area.color)} />
+                  {area.label}
                 </span>
               ))}
             </div>

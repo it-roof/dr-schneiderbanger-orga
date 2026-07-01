@@ -18,13 +18,13 @@ async function main() {
 
   if (!emailArg || !password || !name) {
     console.error(
-      "Verwendung: pnpm user:create <email> <passwort> <name> [admin|mitarbeiter]"
+      "Verwendung: pnpm user:create <email> <passwort> <name> [admin|employee]"
     );
     process.exit(1);
   }
 
   const email = emailArg.trim().toLowerCase();
-  const role = roleArg === "admin" ? "admin" : "mitarbeiter";
+  const role = roleArg === "admin" ? "admin" : "employee";
 
   const passwordError = validatePassword(password);
   if (passwordError) {

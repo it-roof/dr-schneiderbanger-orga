@@ -16,7 +16,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - E-Mail + Passwort (Server Action + DB-Sessions)
 - Sessions in PostgreSQL via `@auth/drizzle-adapter`
 - Konfiguration in `lib/auth/`
-- Ersten Benutzer: `pnpm user:create <email> <passwort> <name> [admin]`
+- Ersten Benutzer: `pnpm user:create <email> <passwort> <name> [admin|employee]`
 - Geschützte Routen via `middleware.ts`
 - Passwort-Policy: min. 12 Zeichen, Buchstaben + Ziffern
 - Login-Rate-Limit: 5 Fehlversuche / 15 Min. pro E-Mail
@@ -24,3 +24,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Enterprise Lightweight
 
 Professionelle Standards, minimale Komplexität. Siehe `.cursor/rules/enterprise-lightweight.mdc`.
+
+## Module
+
+Modul-Dokumentation: [`docs/README.md`](docs/README.md) · Erstes Modul: [Textbausteine](docs/modules/text-blocks.md)
